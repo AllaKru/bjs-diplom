@@ -22,6 +22,7 @@ const receiveCurrencyrates = (data) => {
     rates.fillTable(response.data);
   });
 };
+receiveCurrencyrates();
 setInterval(receiveCurrencyrates, 60000);
 
 const money = new MoneyManager();
@@ -62,10 +63,13 @@ ApiConnector.getFavorites((response) => {
 
 favorite.addUserCallback = (data) => {
   ApiConnector.addUserToFavorites(data, (response) => {
+    delete response.error;
+    response.data = data;
     if (response.success) {
       favorite.clearTable();
-      favorite.fillTable(data); //response? data.response?
-      money.updateUsersList(data);
+      console.log(response);
+      favorite.fillTable(response.data);
+      money.updateUsersList(response.data);
       favorite.setMessage(true, "Пользователь добавлен!");
     } else favorite.setMessage(false, "Пользователь не добавлен!");
   });
@@ -75,8 +79,8 @@ favorite.removeUserCallback = (data) => {
   ApiConnector.removeUserFromFavorites(data, (response) => {
     if (response.success) {
       favorite.clearTable();
-      favorite.fillTable(data);
-      money.updateUsersList(data);
+      favorite.fillTable(response.data);
+      money.updateUsersList(response.data);
       favorite.setMessage(true, "Пользователь удален!");
     } else favorite.setMessage(false, "Пользователь не удален!");
   });

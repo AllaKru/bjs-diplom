@@ -9,7 +9,7 @@ usForm.loginFormCallback = (data) => {
       if (response.success) {
         location.reload();
       } else {
-        usForm.setLoginErrorMessage("Ошибка");
+        usForm.setLoginErrorMessage(response.data);        
       }
     }
     // ApiConnector - это запрос на сервер, респонс - функция которая
@@ -22,7 +22,7 @@ usForm.registerFormCallback = (data) => {
     if (response.success) {
       location.reload();
     } else {
-      usForm.setRegisterErrorMessage("Ошибка");
+      usForm.setRegisterErrorMessage(response.data);
     }
   });
 };
