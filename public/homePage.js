@@ -30,16 +30,16 @@ money.addMoneyCallback = (data) => {
   ApiConnector.addMoney(data, (response) => {
     if (response.success) {
       ProfileWidget.showProfile(response.data);
-      money.setMessage(true, "Счет пополнен!"); //не получилось
-    } else money.setMessage(false, "Ошибка пополнения!");
+      money.setMessage(response.success, "Счет пополнен!");
+    } else money.setMessage(response.success, response.error);
   });
 };
 money.conversionMoneyCallback = (data) => {
   ApiConnector.convertMoney(data, (response) => {
     if (response.success) {
       ProfileWidget.showProfile(response.data);
-      money.setMessage(true, "Конвертация произведена!"); //не получилось
-    } else money.setMessage(false, "Ошибка конвертации!");
+      money.setMessage(response.success, "Конвертация произведена!");
+    } else money.setMessage(response.success, response.error);
   });
 };
 
@@ -47,8 +47,8 @@ money.sendMoneyCallback = (data) => {
   ApiConnector.transferMoney(data, (response) => {
     if (response.success) {
       ProfileWidget.showProfile(response.data);
-      money.setMessage(true, "Перевод выполнен!"); //не получилось
-    } else money.setMessage(false, "Ошибка перевода!");
+      money.setMessage(response.success, "Перевод выполнен!");
+    } else money.setMessage(response.success, response.error);
   });
 };
 
@@ -62,16 +62,17 @@ ApiConnector.getFavorites((response) => {
 });
 
 favorite.addUserCallback = (data) => {
-  ApiConnector.addUserToFavorites(data, (response) => {
-    delete response.error;
-    response.data = data;
+  const parsedData = {
+    id: parseInt(data.id),
+    name: data.name,
+  };
+  ApiConnector.addUserToFavorites(parsedData, (response) => {
     if (response.success) {
       favorite.clearTable();
-      console.log(response);
       favorite.fillTable(response.data);
       money.updateUsersList(response.data);
       favorite.setMessage(true, "Пользователь добавлен!");
-    } else favorite.setMessage(false, "Пользователь не добавлен!");
+    } else favorite.setMessage(false, response.error);
   });
 };
 
@@ -82,17 +83,6 @@ favorite.removeUserCallback = (data) => {
       favorite.fillTable(response.data);
       money.updateUsersList(response.data);
       favorite.setMessage(true, "Пользователь удален!");
-    } else favorite.setMessage(false, "Пользователь не удален!");
+    } else favorite.setMessage(false, response.error);
   });
 };
-//-----------------
-
-//   favorite.setMessage = (isSuccses, message) => {
-//       if (isSuccses){
-//          message = "Пользователь добавлен!"
-//       }
-
-//       else {message = "Пользователь не добавлен!";}
-
-// }
-//favorite.setMessage(isSuccses, message)()
